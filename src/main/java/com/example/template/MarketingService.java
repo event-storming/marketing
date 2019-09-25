@@ -17,7 +17,7 @@ public class MarketingService {
 
     @KafkaListener(topics = "${eventTopic}")
     public void onListener(@Payload String message, ConsumerRecord<?, ?> consumerRecord) {
-        System.out.println("##### listener : " + message);
+//        System.out.println("##### listener : " + message);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -26,13 +26,15 @@ public class MarketingService {
         try {
             deliveryCompleted = objectMapper.readValue(message, DeliveryCompleted.class);
 
-            System.out.println(" #### type = " + deliveryCompleted.getEventType());
+//            System.out.println(" #### type = " + deliveryCompleted.getEventType());
 
             /**
              * 배송이 완료되었을때 상품 추천로직이 돌아간다
              */
             if( deliveryCompleted.getEventType() != null && deliveryCompleted.getEventType().equals(DeliveryCompleted.class.getSimpleName())){
                 // TODO 상품추천
+
+                System.out.println(" #### 상품추천 = " + deliveryCompleted.getOrderId());
             }
 
         }catch (Exception e){
