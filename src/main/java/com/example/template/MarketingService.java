@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MarketingService {
 
+    @Autowired
+    UserOrderHistoryRepository repository;
+
     @KafkaListener(topics = "${eventTopic}")
     public void onListener(@Payload String message, ConsumerRecord<?, ?> consumerRecord) {
 //        System.out.println("##### listener : " + message);
@@ -26,15 +29,21 @@ public class MarketingService {
         try {
             deliveryCompleted = objectMapper.readValue(message, DeliveryCompleted.class);
 
-//            System.out.println(" #### type = " + deliveryCompleted.getEventType());
-
             /**
-             * 배송이 완료되었을때 상품 추천로직이 돌아간다
+             * 배송이 완료되었을때 상품 선호도를 수집한다
              */
             if( deliveryCompleted.getEventType() != null && deliveryCompleted.getEventType().equals(DeliveryCompleted.class.getSimpleName())){
-                // TODO 상품추천
+                // TODO 상품선호도 수집
+                System.out.println(" #### 상품선호도 수집 = 고객 ID : " + deliveryCompleted.getCustomerName() + " , 상품명 : " + deliveryCompleted.getProductName());
 
-                System.out.println(" #### 상품추천 = " + deliveryCompleted.getOrderId());
+                UserOrderHistory userOrderHistory = new UserOrderHistory();
+                userOrderHistory.setOrderId(deliveryCompleted.getOrderId());
+                userOrderHistory.setProductName(deliveryCompleted.getProductName());
+                userOrderHistory.setQuantity(deliveryCompleted.getQuantity());
+                userOrderHistory.setTimestamp(deliveryCompleted.getTimestamp());
+                userOrderHistory.setUserId(deliveryCompleted.getCustomerName());
+
+                repository.save(userOrderHistory);
             }
 
         }catch (Exception e){

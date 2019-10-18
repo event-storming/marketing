@@ -9,6 +9,8 @@ public class DeliveryCompleted extends AbstractEvent{
 
     private Long deliveryId;
     private Long orderId;
+    private int quantity;
+    private String productName;
     private String customerName;
     private String deliveryAddress;
     private String deliveryState;
@@ -19,6 +21,22 @@ public class DeliveryCompleted extends AbstractEvent{
 
     public void setStateMessage(String stateMessage) {
         this.stateMessage = stateMessage;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getCustomerName() {
